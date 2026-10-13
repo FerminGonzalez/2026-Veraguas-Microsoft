@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getServices } from '../../core/services/health.service';
-import { ServiceStatus, ServiceAvailability } from '../../core/models/occ.models';
+import { ServiceStatus } from '../../core/models/occ.models';
 import ServiceStatusCard from './ServiceStatusCard';
 import OverallStatusBanner from './OverallStatusBanner';
-import PromptHeader from '../../shared/PromptHeader';
-import KpiPanel from '../../shared/KpiPanel';
 
 const POLL_MS = 30_000;
 
@@ -30,41 +28,39 @@ export default function HealthDashboard() {
     return () => { cancelled = true; clearInterval(poll); };
   }, []);
 
-  const countBy = (a: ServiceAvailability) => services.filter(s => s.availability === a).length;
-  const showKpis = !loading && !error && services.length > 0;
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-      <PromptHeader
-        command="Get-ServiceHealth -Continuous"
-        subtitle="Disponibilidad operativa de servicios de soporte · actualización cada 30 s"
-      />
-
-      {showKpis && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-          <KpiPanel label="Total" value={services.length} color="#F0F0F0" />
-          <KpiPanel label="Operativos" value={countBy('Available')} color="#16C60C" />
-          <KpiPanel label="Degradados" value={countBy('Degraded')} color="#C19C00" />
-          <KpiPanel label="Caídos" value={countBy('Unavailable')} color="#E74856" />
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div>
+          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 700, fontSize: '1.5rem', color: '#0434A4', letterSpacing: '-0.01em', margin: 0 }}>
+            Panel de Salud de Servicios
+          </h1>
+          <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#64748B', marginTop: 2 }}>
+            Disponibilidad operativa de servicios de soporte · actualización cada 30 s
+          </p>
         </div>
-      )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94A3B8', fontFamily: "'Inter',sans-serif", fontSize: '0.75rem' }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4ADE80', display: 'inline-block', animation: 'pulse 2s infinite' }}></span>
+          En vivo
+        </div>
+      </div>
 
       <OverallStatusBanner services={services} />
 
       {loading ? (
-        <div className="wt-panel" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '64px 24px', color: '#767676' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 30, height: 30, border: '3px solid #2D2D2D', borderTopColor: '#16C60C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-            <span style={{ fontSize: '0.875rem' }}>Conectando con el OCC...</span>
+        <div className="copa-card" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '64px 0', color: '#94A3B8', fontFamily: "'Inter',sans-serif" }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 32, height: 32, border: '2px solid #0434A4', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+            <span style={{ fontSize: '0.875rem' }}>Verificando servicios…</span>
           </div>
         </div>
       ) : error ? (
-        <div className="wt-panel" style={{ padding: '16px 20px', fontSize: '0.875rem', color: '#E74856' }}>
-          ERROR: {error}
+        <div className="copa-card" style={{ padding: 16, background: '#FEF2F2', borderColor: '#FECACA', color: '#B91C1C', fontSize: '0.875rem', fontFamily: "'Inter',sans-serif" }}>
+          Error al cargar servicios: {error}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
           {services.map(svc => <ServiceStatusCard key={svc.id} service={svc} />)}
         </div>
       )}

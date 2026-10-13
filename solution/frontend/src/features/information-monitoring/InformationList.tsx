@@ -16,26 +16,13 @@ interface Props { items: Flight[] }
 
 export default function InformationList({ items }: Props) {
   return (
-    <div className="wt-panel" style={{ overflow: 'hidden', width: '100%' }}>
+    <div style={{ border: '1px solid #E2E8F0', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 4px rgba(4,52,164,0.06)', width: '100%' }}>
       <div style={{ overflowX: 'auto', width: '100%' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ background: '#1F1F1F' }}>
+            <tr style={{ backgroundColor: '#0434A4' }}>
               {COLUMNS.map(col => (
-                <th
-                  key={col}
-                  style={{
-                    padding: '9px 14px',
-                    textAlign: 'left',
-                    fontSize: '0.6875rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: '#6A9955',
-                    borderBottom: '1px solid #2D2D2D',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
+                <th key={col} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: "'Outfit',sans-serif", fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)' }}>
                   {col}
                 </th>
               ))}
@@ -44,32 +31,30 @@ export default function InformationList({ items }: Props) {
           <tbody>
             {items.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '48px 16px', textAlign: 'center', fontSize: '0.8125rem', color: '#767676' }}>
+                <td colSpan={6} style={{ padding: '48px 16px', textAlign: 'center', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#94A3B8' }}>
                   Sin vuelos para los filtros seleccionados
                 </td>
               </tr>
-            ) : items.map((flight, i) => (
-              <tr
-                key={flight.id}
-                style={{
-                  background: i % 2 === 0 ? '#0C0C0C' : '#1F1F1F',
-                  borderBottom: '1px solid #2D2D2D',
-                  transition: 'background 150ms'
-                }}
-              >
-                <td style={{ padding: '7px 14px', fontSize: '0.8125rem', fontWeight: 600, color: '#F0F0F0', whiteSpace: 'nowrap' }}>
-                  {flight.flightNumber}
-                  {flight.isAlert && <span style={{ marginLeft: 6, color: '#E74856' }} aria-label="Alerta crítica">⚠</span>}
-                </td>
-                <td style={{ padding: '7px 14px', color: '#CCCCCC' }}>{flight.origin}</td>
-                <td style={{ padding: '7px 14px', color: '#CCCCCC' }}>{flight.destination}</td>
-                <td style={{ padding: '7px 14px', color: '#999999', whiteSpace: 'nowrap' }}>{fmtDate(flight.scheduledDeparture)}</td>
-                <td style={{ padding: '7px 14px', color: '#999999', whiteSpace: 'nowrap' }}>{fmtDate(flight.estimatedDeparture, false)}</td>
-                <td style={{ padding: '7px 14px' }}>
-                  <InformationStatusBadge status={flight.status} diverted={flight.diverted} />
-                </td>
-              </tr>
-            ))}
+            ) : items.map((flight, i) => {
+              const bg = flight.status === 'Cancelled' ? '#FEF9F9'
+                       : flight.status === 'Delayed'   ? '#FFFDF0'
+                       : i % 2 === 0 ? '#fff' : '#FAFBFF';
+              return (
+                <tr key={flight.id} style={{ background: bg, borderBottom: '1px solid #EEF2FF', transition: 'background 120ms' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: "'Outfit',sans-serif", fontSize: '0.875rem', fontWeight: 600, color: '#0434A4' }}>
+                    {flight.flightNumber}
+                    {flight.isAlert && <span style={{ marginLeft: 6, color: '#DC2626' }} aria-label="Alerta crítica">⚠</span>}
+                  </td>
+                  <td style={{ padding: '12px 16px', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#334155' }}>{flight.origin}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#334155' }}>{flight.destination}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#475569' }}>{fmtDate(flight.scheduledDeparture)}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#475569' }}>{fmtDate(flight.estimatedDeparture, false)}</td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <InformationStatusBadge status={flight.status} diverted={flight.diverted} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

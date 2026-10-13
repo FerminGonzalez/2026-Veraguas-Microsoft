@@ -1,108 +1,44 @@
 @import "tailwindcss";
 
-/* ── Tema Windows Terminal — Consola OCC ────────────────────────────── */
-/* Paleta derivada del look de Windows Terminal (fondo #0C0C0C, paneles
-   #1F1F1F, accent #0078D4) + colores ANSI de la consola y tokens Dark+
-   de VS Code para pares clave/valor. */
+/* ── Copa Airlines Brand System ─────────────────────────────────────── */
 @theme {
-  --color-term-bg:      #0C0C0C;
-  --color-term-panel:   #1F1F1F;
-  --color-term-border:  #2D2D2D;
-  --color-term-text:    #CCCCCC;
-  --color-term-title:   #F0F0F0;
-  --color-term-dim:     #999999;
-  --color-term-muted:   #767676;
-  --color-term-accent:  #0078D4;
-  --color-term-green:   #16C60C;
-  --color-term-yellow:  #C19C00;
-  --color-term-amber:   #F9F1A5;
-  --color-term-red:     #E74856;
-  --color-term-blue:    #3A96DD;
-  --color-term-prompt:  #D7BA7D;
-  --color-term-key:     #9CDCFE;
-  --color-term-string:  #CE9178;
-  --color-term-comment: #6A9955;
+  --color-copa-blue:       #0434A4;
+  --color-copa-blue-light: #1a4fc4;
+  --color-copa-blue-dark:  #02278a;
+  --color-copa-surface:    #F0F4FF;
+  --color-copa-accent:     #EEF2FF;
 
-  --font-family-mono: 'Cascadia Code', 'Cascadia Mono', 'Consolas', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-family-title: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+  --font-family-body:  'Inter',  'Segoe UI', system-ui, sans-serif;
 }
 
-/* ── Reset / base global ────────────────────────────────────────────── */
+/* ── Global reset / base ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { color-scheme: dark; }
-
-html, body, #root {
+html, body {
   min-height: 100%;
-}
-
-body {
-  background-color: #0C0C0C;
-  color: #CCCCCC;
-  font-family: 'Cascadia Code', 'Cascadia Mono', 'Consolas', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 14px;
+  background-color: #F0F4FF;
+  color: #1E293B;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Cascadia Code', 'Cascadia Mono', 'Consolas', ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: #F0F0F0;
-  letter-spacing: 0;
+  font-family: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+  color: #0434A4;
+  letter-spacing: -0.01em;
 }
 
-::selection { background: #0078D4; color: #FFFFFF; }
-
-/* ── Componentes base (clases utilitarias) ──────────────────────────── */
-.wt-panel {
-  background: #1F1F1F;
-  border: 1px solid #2D2D2D;
-  border-radius: 4px;
+/* ── Copa utility classes ────────────────────────────────────────────── */
+.copa-card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(4, 52, 164, 0.08), 0 1px 2px rgba(0,0,0,0.04);
+  border: 1px solid #E2E8F0;
 }
 
-.wt-input {
-  background: #0C0C0C;
-  border: 1px solid #2D2D2D;
-  border-radius: 3px;
-  color: #CCCCCC;
-  font-family: 'Cascadia Code', 'Cascadia Mono', 'Consolas', ui-monospace, monospace;
-  font-size: 0.8125rem;
-  outline: none;
-  transition: border-color 150ms;
-}
-.wt-input::placeholder { color: #767676; }
-.wt-input:focus { border-color: #0078D4; }
-
-.wt-btn {
-  background: #0078D4;
-  border: 1px solid #0078D4;
-  border-radius: 3px;
-  color: #FFFFFF;
-  font-family: 'Cascadia Code', 'Cascadia Mono', 'Consolas', ui-monospace, monospace;
-  font-size: 0.8125rem;
-  cursor: pointer;
-  transition: background 150ms, border-color 150ms;
-}
-.wt-btn:hover { background: #1A86E0; border-color: #1A86E0; }
-.wt-btn:active { background: #005A9E; }
-
-/* Opciones de los <select> en tema oscuro */
-option { background: #1F1F1F; color: #CCCCCC; }
-
-/* ── Scrollbars oscuras (webkit + Firefox) ──────────────────────────── */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #555555 #2D2D2D;
-}
-*::-webkit-scrollbar { width: 12px; height: 12px; }
-*::-webkit-scrollbar-track { background: #2D2D2D; }
-*::-webkit-scrollbar-thumb {
-  background: #555555;
-  border: 3px solid #2D2D2D;
-  border-radius: 6px;
-}
-*::-webkit-scrollbar-thumb:hover { background: #777777; }
-*::-webkit-scrollbar-corner { background: #2D2D2D; }
-
-/* ── Animaciones ────────────────────────────────────────────────────── */
+/* ── Animations ──────────────────────────────────────────────────────── */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
@@ -110,9 +46,4 @@ option { background: #1F1F1F; color: #CCCCCC; }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
-}
-
-@keyframes blink {
-  0%, 49%   { opacity: 1; }
-  50%, 100% { opacity: 0; }
 }
