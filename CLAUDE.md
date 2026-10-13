@@ -12,17 +12,35 @@ Desafío hackathon 2026 Veraguas: Stack completo de DevOps, APIs y observabilida
 
 ## Estructura del repositorio
 ```
-section_1/   - Instrucciones generales, propósito y objetivos
-section_2/   - Arquitectura, stack tecnológico, componentes por equipo
-section_3/   - Terraform, ciclo DevOps (Deploy → Diagnóstico → Corrección → Evaluación)
-section_4/   - Diagnóstico: bloque paralelo (E1, E2, E3)
-section_5/   - Corrección avanzada: bloque dependiente (E4, E5, E6)
-section_6/   - Evaluación: estrategia CTFd, categorías y reglas
-assets/      - Recursos e imágenes del hackathon
-hackathon_files/ - Archivos del hackathon
-solution/    - Solución final (backend-source.zip, frontend-dist.zip)
-deploy-apps.ps1 - Script de despliegue de aplicaciones
+section_files/   - Secciones 1-6 del challenge (intro, arquitectura, IaC, diagnóstico, corrección, evaluación)
+assets/          - Recursos e imágenes del hackathon
+hackathon_files/ - lookups (CSV), notebooks (KQL), templates, logs
+solution/        - Solución completa (SÍ versionada)
+  backend/         - .NET 10, Clean Architecture (Copa.OCC.Api)
+  frontend/        - React + Vite + TypeScript
+  deploy-apps.ps1  - az webapp deploy (backend-source.zip, frontend-source.zip)
+  *.zip            - paquetes entregables
+DEVELOPMENT-LOG.md - Historial y arquitectura mapeada
 ```
+
+## API de la solución (backend)
+| Método | Ruta | Notas |
+|--------|------|-------|
+| GET  | `/api/flights/list`   | Lista de vuelos |
+| POST | `/api/flights/create` | **El más difícil (bloque 1600/E6)** |
+| GET  | `/api/information`    | Monitoreo de información |
+| GET  | `/api/services`       | Estado de servicios |
+| GET  | `/api/status`         | Health/status general |
+
+Middlewares: `CorrelationIdMiddleware`, `FrontendHandshakeMiddleware` (valida
+origin → CORS renombrado), `DeepHealthCheck` (health profundo).
+
+## Estado actual
+- ✅ Código fuente de la solución **versionado en GitHub** (backend .NET 10 + frontend React/Vite + KQL)
+- ✅ `deploy-apps.ps1` presente (despliegue zip a Web Apps)
+- ✅ `.gitignore` creado (excluye node_modules, dist, bin, obj)
+- ✅ `DEVELOPMENT-LOG.md` con arquitectura y mapa de bloques
+- ⬜ Compilar backend (`dotnet build`) y frontend (`npm run build`) — pendiente de SDK/tooling
 
 ## Componentes principales
 - **Frontend**: frontend-dist.zip (distribuido, lista para servir)
