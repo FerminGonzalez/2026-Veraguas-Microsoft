@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getInformation } from '../../core/services/information.service';
-import { Flight } from '../../core/models/occ.models';
+import { Flight, FlightStatus } from '../../core/models/occ.models';
 import InformationList from './InformationList';
 import InformationFilter, { InformationFilters } from './InformationFilter';
+import PromptHeader from '../../shared/PromptHeader';
+import KpiPanel from '../../shared/KpiPanel';
 
 const POLL_MS = 30_000;
 
@@ -38,41 +40,45 @@ export default function InformationDashboard() {
     return routeMatch && statusMatch && dateMatch;
   }), [allInformation, filters]);
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+  const countBy = (s: FlightStatus) => allInformation.filter(f => f.status === s).length;
+  const showKpis = !loading && !error && allInformation.length > 0;
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-        <div>
-          <h1 style={{ fontFamily: "'Outfit',sans-serif", fontWeight: 700, fontSize: '1.625rem', color: '#0434A4', letterSpacing: '-0.02em', margin: '0 0 4px' }}>
-            Monitoreo de Vuelos
-          </h1>
-          <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.8125rem', color: '#64748B', margin: 0 }}>
-            Estado operativo en tiempo real · actualización cada 30 s
-          </p>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+      <PromptHeader
+        command="Get-Flights -Status All"
+        subtitle="Estado operativo en tiempo real · actualización cada 30 s"
+      />
+
+      {showKpis && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+          <KpiPanel label="Total" value={allInformation.length} color="#3A96DD" />
+          <KpiPanel label="Programados" value={countBy('Scheduled')} color="#F0F0F0" />
+          <KpiPanel label="En tránsito" value={countBy('InTransit')} color="#3A96DD" />
+          <KpiPanel label="Retrasados" value={countBy('Delayed')} color="#C19C00" />
+          <KpiPanel label="Aterrizados" value={countBy('Landed')} color="#16C60C" />
+          <KpiPanel label="Cancelados" value={countBy('Cancelled')} color="#E74856" />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 20 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E', display: 'inline-block', animation: 'pulse 2s infinite' }}></span>
-          <span style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.75rem', fontWeight: 500, color: '#16A34A' }}>En vivo</span>
-        </div>
-      </div>
+      )}
 
       <InformationFilter onFiltersChange={setFilters} />
 
       {loading ? (
-        <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 10, padding: '64px 24px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#94A3B8' }}>
-            <div style={{ width: 32, height: 32, border: '3px solid #E2E8F0', borderTopColor: '#0434A4', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-            <span style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.875rem' }}>Cargando vuelos…</span>
+        <div className="wt-panel" style={{ padding: '64px 24px', textAlign: 'center' }}>
+          <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 14, color: '#767676' }}>
+            <div style={{ width: 30, height: 30, border: '3px solid #2D2D2D', borderTopColor: '#16C60C', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+            <span style={{ fontSize: '0.875rem' }}>Conectando con el OCC...</span>
           </div>
         </div>
       ) : error ? (
-        <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 10, padding: '16px 20px', fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#991B1B' }}>
-          Error al cargar vuelos: {error}
+        <div className="wt-panel" style={{ padding: '16px 20px', fontSize: '0.875rem', color: '#E74856' }}>
+          ERROR: {error}
         </div>
       ) : (
         <>
           <div style={{ padding: '0 2px' }}>
-            <span style={{ fontFamily: "'Outfit',sans-serif", fontSize: '0.8125rem', fontWeight: 600, color: '#475569' }}>
+            <span style={{ fontSize: '0.75rem', color: '#767676' }}>
               {filteredInformation.length} vuelo(s) encontrados
             </span>
           </div>

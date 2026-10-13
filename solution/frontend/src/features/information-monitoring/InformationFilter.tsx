@@ -7,16 +7,22 @@ export interface InformationFilters {
   date: string;
 }
 
-const INPUT: React.CSSProperties = {
-  height: 36, padding: '0 10px', border: '1.5px solid #CBD5E1', borderRadius: 6,
-  fontFamily: "'Inter',sans-serif", fontSize: '0.875rem', color: '#1E3A5F',
-  background: '#fff', outline: 'none', width: '100%', boxSizing: 'border-box'
+const LABEL: React.CSSProperties = {
+  fontSize: '0.6875rem',
+  letterSpacing: '0.07em',
+  textTransform: 'uppercase',
+  color: '#767676',
+  marginBottom: 5,
+  display: 'block'
 };
 
-const LABEL: React.CSSProperties = {
-  fontFamily: "'Inter',sans-serif", fontSize: '0.6875rem', fontWeight: 600,
-  letterSpacing: '0.07em', textTransform: 'uppercase', color: '#64748B',
-  marginBottom: 4, display: 'block'
+const FIELD: React.CSSProperties = {
+  height: 34,
+  width: '100%',
+  minWidth: 148,
+  padding: '0 10px',
+  boxSizing: 'border-box',
+  fontSize: '0.8125rem'
 };
 
 const STATUSES: Array<{ value: FlightStatus; label: string }> = [
@@ -46,21 +52,21 @@ export default function InformationFilter({ onFiltersChange }: Props) {
   }
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: 10, padding: '16px 20px', boxShadow: '0 1px 4px rgba(4,52,164,0.06)' }}>
+    <div className="wt-panel" style={{ padding: '14px 16px' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end' }}>
 
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 160 }}>
           <label style={LABEL}>Ruta (origen / destino)</label>
           <input type="text" value={route}
             onChange={e => { setRoute(e.target.value); emit(e.target.value, status, date); }}
-            placeholder="Ej. PTY, BOG…" style={INPUT} />
+            placeholder="Ej. PTY, BOG…" className="wt-input" style={FIELD} />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <label style={LABEL}>Estado</label>
           <select value={status}
             onChange={e => { const v = e.target.value as FlightStatus | ''; setStatus(v); emit(route, v, date); }}
-            style={{ ...INPUT, minWidth: 148 }}>
+            className="wt-input" style={FIELD}>
             <option value="">Todos los estados</option>
             {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
@@ -70,11 +76,11 @@ export default function InformationFilter({ onFiltersChange }: Props) {
           <label style={LABEL}>Fecha</label>
           <input type="date" value={date}
             onChange={e => { setDate(e.target.value); emit(route, status, e.target.value); }}
-            style={{ ...INPUT, minWidth: 148 }} />
+            className="wt-input" style={{ ...FIELD, colorScheme: 'dark' }} />
         </div>
 
         <button type="button" onClick={clear}
-          style={{ height: 36, padding: '0 18px', background: '#0434A4', color: '#fff', border: 'none', borderRadius: 6, fontFamily: "'Outfit',sans-serif", fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'flex-end' }}>
+          className="wt-btn" style={{ height: 34, padding: '0 16px', alignSelf: 'flex-end', whiteSpace: 'nowrap' }}>
           Limpiar filtros
         </button>
 

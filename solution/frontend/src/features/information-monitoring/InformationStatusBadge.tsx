@@ -1,13 +1,32 @@
 import { FlightStatus } from '../../core/models/occ.models';
 
-/* WCAG AA verified: all combos ≥ 4.5:1 contrast ratio */
-const STATUS_CONFIG: Record<FlightStatus, { label: string; bg: string; color: string }> = {
-  Scheduled: { label: 'Programado',  bg: '#F1F5F9', color: '#334155' },
-  InTransit: { label: 'En tránsito', bg: '#EEF2FF', color: '#1E3A8A' },
-  Delayed:   { label: 'Retrasado',   bg: '#FFFBEB', color: '#92400E' },
-  Cancelled: { label: 'Cancelado',   bg: '#FEF2F2', color: '#991B1B' },
-  Landed:    { label: 'Aterrizado',  bg: '#F0FDF4', color: '#14532D' }
+/* Paleta ANSI de la consola (tema Windows Terminal / PowerShell) */
+const STATUS_CONFIG: Record<FlightStatus, { label: string; color: string }> = {
+  Scheduled: { label: 'Programado',  color: '#CCCCCC' },
+  InTransit: { label: 'En tránsito', color: '#3A96DD' },
+  Delayed:   { label: 'Retrasado',   color: '#C19C00' },
+  Cancelled: { label: 'Cancelado',   color: '#E74856' },
+  Landed:    { label: 'Aterrizado',  color: '#16C60C' }
 };
+
+function Tag({ label, color }: { label: string; color: string }) {
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        padding: '1px 8px',
+        borderRadius: 3,
+        color,
+        background: `${color}1A`,
+        border: `1px solid ${color}55`,
+        fontSize: '0.75rem',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {label}
+    </span>
+  );
+}
 
 interface Props {
   status: FlightStatus;
@@ -15,17 +34,11 @@ interface Props {
 }
 
 export default function InformationStatusBadge({ status, diverted = false }: Props) {
-  const { label, bg, color } = STATUS_CONFIG[status];
+  const { label, color } = STATUS_CONFIG[status];
   return (
     <>
-      <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 10px', borderRadius: 9999, background: bg, color, fontFamily: "'Outfit',sans-serif", fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.02em' }}>
-        {label}
-      </span>
-      {diverted && (
-        <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 4, padding: '2px 10px', borderRadius: 9999, background: '#FFF7ED', color: '#9A3412', fontFamily: "'Outfit',sans-serif", fontSize: '0.75rem', fontWeight: 600 }}>
-          Desviado
-        </span>
-      )}
+      <Tag label={label} color={color} />
+      {diverted && <span style={{ marginLeft: 6 }}><Tag label="Desviado" color="#C19C00" /></span>}
     </>
   );
 }
