@@ -1,0 +1,23 @@
+# --- Node (frontend React/Vite) ---
+solution/frontend/node_modules/
+solution/frontend/dist/
+*.tsbuildinfo
+
+# --- .NET (backend) ---
+solution/backend/bin/
+solution/backend/obj/
+*.user
+
+# --- Sistema / editores ---
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# --- Logs ---
+*.log
+
+# NOTA: los archivos en solution/ (código fuente backend+frontend, zips
+# entregables y deploy-apps.ps1) SÍ se versionan: son la solución del reto.
+# Solo se excluyen node_modules/ y artefactos de build (dist, bin, obj).
