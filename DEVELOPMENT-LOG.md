@@ -85,3 +85,22 @@ Application Insights, Swashbuckle (Swagger).
 - ⬜ Ejecutar `dotnet build` (requiere SDK .NET 10) para validar compilación.
 - ⬜ Ejecutar `npm run build` en `solution/frontend` para validar el bundle.
 - ⬜ Desplegar a Azure con `deploy-apps.ps1` (requiere suscripción + `az login`).
+
+---
+
+## 2026-10-12 — Compilación y prueba del backend (.NET 10)
+
+- SDK .NET **10.0.401** instalado localmente (`~/.dotnet`, sin sudo).
+- `dotnet build -c Release` → **Build succeeded, 0 errores, 2 warnings**.
+- **Fix**: warnings CS8620 (nullability) en `Program.cs` / DeepHealthCheck
+  resueltos con cast `var data = (IReadOnlyDictionary<string, object?>)entry.Data;`
+  → de 4 a 2 warnings (sin cambio de comportamiento).
+- **Pendiente conocido**: 1 warning **NU1903** — AutoMapper 13.0.1 (GHSA-rvv3-g6hj-g44x).
+  No se fuerza upgrade (AutoMapper 14+ cambia a licencia comercial) → decisión del equipo.
+- **API probada en local** (`http://127.0.0.1:5099`, EF Core InMemory):
+  `GET /health` 200 · `GET /health/deep` 503 (E4, esperado) · `GET /api/status` 503 (E5) ·
+  `GET /api/services` 200 · `GET /api/flights/list` 200 ·
+  **`POST /api/flights/create` 201 (E6)** · payload inválido **400** (validación) ·
+  header `X-Correlation-Id` ecoado.
+- Hallazgo (no bug): `FrontendHandshake` no rechaza GET con Origin no permitido en frío;
+  coherente con el diseño E5 (requiere handshake previo del frontend).

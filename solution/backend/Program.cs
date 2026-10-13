@@ -147,12 +147,13 @@ app.MapHealthChecks("/health/deep", new HealthCheckOptions
     {
         ctx.Response.ContentType = "application/json";
         var entry = report.Entries.FirstOrDefault().Value;
+        var data = (IReadOnlyDictionary<string, object?>)entry.Data;
         var result = new
         {
             status = report.Status.ToString(),
-            mode = entry.Data.GetValueOrDefault("mode", "unknown"),
-            errorCode = entry.Data.GetValueOrDefault("errorCode", null),
-            reason = entry.Data.GetValueOrDefault("reason", null),
+            mode = data.GetValueOrDefault("mode", "unknown"),
+            errorCode = data.GetValueOrDefault("errorCode"),
+            reason = data.GetValueOrDefault("reason"),
             checks = report.Entries.Select(e => new { name = e.Key, status = e.Value.Status.ToString() })
         };
         await ctx.Response.WriteAsync(JsonSerializer.Serialize(result));
