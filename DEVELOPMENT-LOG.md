@@ -104,3 +104,28 @@ Application Insights, Swashbuckle (Swagger).
   header `X-Correlation-Id` ecoado.
 - Hallazgo (no bug): `FrontendHandshake` no rechaza GET con Origin no permitido en frío;
   coherente con el diseño E5 (requiere handshake previo del frontend).
+
+### Build del frontend (React + Vite + TypeScript) — EXIT 0 ✅
+- Comando: `npm run build` → `tsc -b && vite build` (typecheck + bundle).
+- **Problema inicial**: `Cannot find module @rollup/rollup-linux-x64-gnu` — bug conocido
+  de npm (#4828). El `node_modules/` se instaló en **Windows** (`/mnt/c/`), por lo que
+  solo contenía el binario rollup `win32-x64`; WSL/Linux necesita `linux-x64-gnu`.
+  - **Fix**: `npm install @rollup/rollup-linux-x64-gnu --no-save --os=linux --cpu=x64`
+    (no toca `package.json` ni `package-lock.json`).
+- **Resultado**: `tsc -b` sin errores de tipos + `vite build` → **built in 12.30s**.
+- **Bundle generado** (`dist/`, 440K, ignorado por git):
+  | Archivo | Tamaño | gzip |
+  |---|---|---|
+  | `index.html` | 0.73 kB | 0.41 kB |
+  | `assets/index-*.css` | 6.06 kB | 2.06 kB |
+  | `assets/api-client-*.js` | 1.50 kB | 0.89 kB |
+  | `assets/HealthDashboard-*.js` | 6.26 kB | 1.99 kB |
+  | `assets/InformationDashboard-*.js` | 8.35 kB | 2.79 kB |
+  | `assets/index-*.js` (bundle principal) | 409.54 kB | 149.05 kB |
+  | `dist/server.js` + `dist/package.json` | (modo servidor, `npm start`) | — |
+- Warnings inofensivos: comentarios `/*#__PURE__*/` de `@microsoft/applicationinsights-*`
+  que Rollup no puede interpretar por su posición → los remueve. No afectan el bundle.
+- Verificado: `dist/` en `.gitignore` ✅ · `package.json` sin cambios ✅.
+
+> **Nota de replicación**: si se clona este repo en Linux/WSL con un `node_modules`
+> proveniente de Windows, repetir el `npm install` del binario rollup de arriba.
